@@ -7,9 +7,6 @@ import time
 import psycopg2
 import bleach
 
-## Database connection
-DB = psycopg2.connect("dbname=forum")
-
 ## Get posts from database.
 def GetAllPosts():
     '''Get all the posts from the database, sorted with the newest first.
@@ -20,9 +17,11 @@ def GetAllPosts():
       it was posted.
     '''
 
+    DB = psycopg2.connect("dbname=forum")
     cursor = DB.cursor()
     cursor.execute("SELECT time, content FROM posts ORDER BY time DESC")
     posts = ({'content': str(row[1]), 'time': str(row[0])} for row in cursor.fetchall())
+    DB.close()
     return posts
 
     '''
@@ -39,11 +38,13 @@ def AddPost(content):
       content: The text content of the new post.
     '''
 
+    DB = psycopg2.connect("dbname=forum")
     t = time.strftime('%c', time.localtime())
     cursor = DB.cursor()
     content = bleach.clean(content)
     cursor.execute("INSERT INTO posts (content) VALUES (%s)", (content, ))
-    DB.execute()
+    DB.commit()
+    DB.close()
 
     '''
     t = time.strftime('%c', time.localtime())
