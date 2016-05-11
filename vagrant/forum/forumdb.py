@@ -40,7 +40,7 @@ def AddPost(content):
 
     t = time.strftime('%c', time.localtime())
     cursor = DB.cursor()
-    cursor.execute("INSERT INTO posts (content) VALUES ('%s')" % content)
+    cursor.execute("INSERT INTO posts (content) VALUES (%s)", (content, ))
     DB.execute()
 
     '''
