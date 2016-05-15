@@ -15,9 +15,9 @@ def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     c = conn.cursor()
-    c.execute("DELETE FROM Matches")
-    c.execute("UPDATE Players SET matches = 0")
-    c.execute("UPDATE Players SET wins = 0")
+    c.execute("DELETE FROM Matches;")
+    c.execute("UPDATE Players SET matches = 0;")
+    c.execute("UPDATE Players SET wins = 0;")
     conn.commit()
     conn.close()
 
@@ -26,7 +26,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     conn = connect()
     c = conn.cursor()
-    c.execute("DELETE FROM Players")
+    c.execute("DELETE FROM Players;")
     conn.commit()
     conn.close()
 
@@ -35,7 +35,7 @@ def countPlayers():
     """Returns the number of players currently registered."""
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM Players")
+    c.execute("SELECT COUNT(*) FROM Players;")
     rows = c.fetchall()
     conn.close()
     return rows[0][0]
@@ -52,7 +52,7 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO Players (name) VALUES (%s)", (name, ))
+    c.execute("INSERT INTO Players (name) VALUES (%s);", (name, ))
     conn.commit()
     conn.close()
 
@@ -72,7 +72,7 @@ def playerStandings():
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT * FROM Players ORDER BY wins")
+    c.execute("SELECT * FROM Players ORDER BY wins;")
     rows = c.fetchall()
     conn.close()
     return rows;
@@ -87,9 +87,9 @@ def reportMatch(winner, loser):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO Matches (winner, loser) VALUES (%s, %s)", (winner, loser, ))
-    c.execute("UPDATE Players SET matches = matches + 1 WHERE id = %s or id = %s", (winner, loser, ))
-    c.execute("UPDATE Players SET wins = wins + 1 WHERE id = %s", (winner, ))
+    c.execute("INSERT INTO Matches (winner, loser) VALUES (%s, %s);", (winner, loser, ))
+    c.execute("UPDATE Players SET matches = matches + 1 WHERE id = %s or id = %s;", (winner, loser, ))
+    c.execute("UPDATE Players SET wins = wins + 1 WHERE id = %s;", (winner, ))
     conn.commit()
     conn.close()
 
