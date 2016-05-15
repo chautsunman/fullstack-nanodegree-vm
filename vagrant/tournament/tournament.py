@@ -83,6 +83,13 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("INSERT INTO Matches (winner, loser) VALUES (%s, %s)", (winner, loser, ))
+    c.execute("UPDATE Players SET matches = matches + 1 WHERE id = %s or id = %s", (winner, loser, ))
+    c.execute("UPDATE Players SET wins = wins + 1 WHERE id = %s", (winner, ))
+    conn.commit()
+    conn.close()
 
 
 def swissPairings():
