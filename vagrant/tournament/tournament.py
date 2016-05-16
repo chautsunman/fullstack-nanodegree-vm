@@ -38,9 +38,9 @@ def countPlayers():
     """Returns the number of players currently registered."""
     conn, c = connect()
     c.execute("SELECT COUNT(*) FROM Players;")
-    rows = c.fetchall()
+    row = c.fetchone()
     conn.close()
-    return rows[0][0]
+    return row[0]
 
 
 def registerPlayer(name):
