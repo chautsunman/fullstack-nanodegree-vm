@@ -20,8 +20,6 @@ def deleteMatches():
     """Remove all the match records from the database."""
     conn, c = connect()
     c.execute("DELETE FROM Matches;")
-    c.execute("UPDATE Players SET matches = 0;")
-    c.execute("UPDATE Players SET wins = 0;")
     conn.commit()
     conn.close()
 
@@ -72,7 +70,7 @@ def playerStandings():
         matches: the number of matches the player has played
     """
     conn, c = connect()
-    c.execute("SELECT * FROM Players ORDER BY wins;")
+    c.execute("SELECT * FROM standings;")
     rows = c.fetchall()
     conn.close()
     return rows;
@@ -87,8 +85,6 @@ def reportMatch(winner, loser):
     """
     conn, c = connect()
     c.execute("INSERT INTO Matches (winner, loser) VALUES (%s, %s);", (winner, loser, ))
-    c.execute("UPDATE Players SET matches = matches + 1 WHERE id = %s or id = %s;", (winner, loser, ))
-    c.execute("UPDATE Players SET wins = wins + 1 WHERE id = %s;", (winner, ))
     conn.commit()
     conn.close()
 
