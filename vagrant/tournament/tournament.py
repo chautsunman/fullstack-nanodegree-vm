@@ -6,15 +6,19 @@
 import psycopg2
 
 
-def connect():
+def connect(dbname="tournament"):
     """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+    try:
+        conn = psycopg2.connect("dbname={}".format(dbname))
+        c = conn.cursor()
+        return conn, c
+    except:
+        print("failed to connect to database {}".format(dbname))
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    conn = connect()
-    c = conn.cursor()
+    conn, c = connect()
     c.execute("DELETE FROM Matches;")
     c.execute("UPDATE Players SET matches = 0;")
     c.execute("UPDATE Players SET wins = 0;")
@@ -24,8 +28,7 @@ def deleteMatches():
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    conn = connect()
-    c = conn.cursor()
+    conn, c = connect()
     c.execute("DELETE FROM Players;")
     conn.commit()
     conn.close()
@@ -33,8 +36,7 @@ def deletePlayers():
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    conn = connect()
-    c = conn.cursor()
+    conn, c = connect()
     c.execute("SELECT COUNT(*) FROM Players;")
     rows = c.fetchall()
     conn.close()
@@ -50,8 +52,7 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-    conn = connect()
-    c = conn.cursor()
+    conn, c = connect()
     c.execute("INSERT INTO Players (name) VALUES (%s);", (name, ))
     conn.commit()
     conn.close()
@@ -70,8 +71,7 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    conn = connect()
-    c = conn.cursor()
+    conn, c = connect()
     c.execute("SELECT * FROM Players ORDER BY wins;")
     rows = c.fetchall()
     conn.close()
@@ -85,8 +85,7 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
-    conn = connect()
-    c = conn.cursor()
+    conn, c = connect()
     c.execute("INSERT INTO Matches (winner, loser) VALUES (%s, %s);", (winner, loser, ))
     c.execute("UPDATE Players SET matches = matches + 1 WHERE id = %s or id = %s;", (winner, loser, ))
     c.execute("UPDATE Players SET wins = wins + 1 WHERE id = %s;", (winner, ))
